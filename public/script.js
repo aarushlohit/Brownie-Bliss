@@ -1,3 +1,5 @@
+script.js
+
 // --- CONFIG ---
 
 const API_BASE = '/api';
@@ -19,7 +21,6 @@ function toggleTheme() {
 // --- PRODUCTS DATA ---
 let products = [];
 let bdayCakes = {};
-buildCatalogFromList(null);
 const DEFAULT_PRODUCTS = [
     { id: 1, name: "Velvet Dream Cake", category: "cakes", price: 850, emoji: "", img: "https://theobroma.in/cdn/shop/files/redvelvet-theo.jpg?v=1701321860" },
     { id: 2, name: "Dutch Truffle Delight", category: "cakes", price: 950, emoji: "", img: "https://tse3.mm.bing.net/th/id/OIP.6wMpc_E6xsHLl3zT2ItBSQHaHa?pid=Api&P=0&h=180" },
@@ -133,20 +134,6 @@ async function loadProducts() {
     try {
         const res = await fetch(`${API_BASE}/products`);
         const data = await res.json();
-        if (data.success && Array.isArray(data.products)) {
-            buildCatalogFromList(data.products);
-        } else {
-            buildCatalogFromList(null);
-        }
-    } catch (e) {
-        console.error('Error loading products from database:', e);
-        buildCatalogFromList(null);
-    }
-    if (document.getElementById('productsGrid')) {
-        filterProducts('all');
-    }
-    if (document.getElementById('cakePrice')) {
-        calculateBdayPrice();
         if (data.success && Array.isArray(data.products) && data.products.length) {
             products = data.products.filter(p => p.type === 'standard').map(p => ({
                 id: p.id_ref,
@@ -184,7 +171,7 @@ async function loadProducts() {
 
 // --- CART STATE ---
 let cart = JSON.parse(localStorage.getItem('brownie_bliss_cart') || '[]');
-let checkoutState = { name: '', phone: '', email: '', address: '', city: '', pincode: '', verified: false, currentStep: 1 };
+let checkoutState = { name: '', phone: '', address: '', city: '', pincode: '', verified: false, currentStep: 1 };
 
 function saveCart() {
     localStorage.setItem('brownie_bliss_cart', JSON.stringify(cart));
@@ -192,7 +179,6 @@ function saveCart() {
 
 // --- CART UI ---
 function updateCartUI() {
-    // Cart contract expected across pages: #cartItems, #cartFooter, #cartTotal, #cartCount, #cartBadge
     const cartContainer = document.getElementById('cartItems');
     const cartFooter = document.getElementById('cartFooter');
     const cartTotal = document.getElementById('cartTotal');
@@ -255,7 +241,6 @@ function addToCart(product) {
     saveCart();
     updateCartUI();
     showToast('Added to cart! 🛒');
-    openCart();
 }
 
 function changeQty(index, delta) {
@@ -283,6 +268,7 @@ function closeCart() {
     document.getElementById('cartOverlay')?.classList.remove('open');
 }
 
+// --- CHECKOUT FLOW ---
 // --- CHECKOUT FLOW ---
 function injectCheckoutModal() {
     if (document.getElementById('checkoutOverlay')) return;
@@ -319,10 +305,6 @@ function injectCheckoutModal() {
                             <span class="prefix">+91</span>
                             <input type="tel" id="custPhone" placeholder="10-digit number" maxlength="10">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Email <span style="font-weight:400;color:var(--text-mid);font-size:12px;">(for your receipt)</span></label>
-                        <input type="email" id="custEmail" placeholder="you@example.com" autocomplete="email">
                     </div>
                     <button class="hero-cta" style="width: 100%; margin-top: 20px;" onclick="sendOTP()">
                         Send Verification OTP &rarr;
@@ -402,7 +384,7 @@ function openCheckout() {
     }
     injectCheckoutModal();
     closeCart();
-    checkoutState = { name: '', phone: '', email: '', address: '', city: '', pincode: '', verified: false, currentStep: 1 };
+    checkoutState = { name: '', phone: '', address: '', city: '', pincode: '', verified: false, currentStep: 1 };
     showCheckoutStep(1);
     document.getElementById('checkoutOverlay').classList.add('open');
 }
@@ -428,19 +410,14 @@ function showCheckoutStep(n) {
 async function sendOTP() {
     const name = document.getElementById('custName').value.trim();
     const phone = document.getElementById('custPhone').value.trim();
-    const email = document.getElementById('custEmail')?.value.trim() || '';
 
     if (!name) { showToast('Please enter your name'); return; }
     if (!phone || phone.length !== 10 || !/^\d+$/.test(phone)) {
         showToast('Enter a valid 10-digit phone number'); return;
     }
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToast('Enter a valid email address'); return;
-    }
 
     checkoutState.name = name;
     checkoutState.phone = phone;
-    checkoutState.email = email;
 
     // Bypassing OTP
     const btn = document.querySelector('#checkStep1 .hero-cta');
@@ -514,7 +491,6 @@ function goToConfirm() {
     document.getElementById('confirmCustomer').innerHTML = `
         <div style="font-weight:600; color:var(--brown-dark)">${checkoutState.name}</div>
         <div style="font-size:13px; color:var(--text-mid); margin-bottom:4px">+91 ${checkoutState.phone}</div>
-        ${checkoutState.email ? `<div style="font-size:13px; color:var(--text-mid); margin-bottom:4px">${checkoutState.email}</div>` : ''}
         <div style="font-size:13px; color:var(--text-mid); line-height:1.4">${addr}, ${city} - ${pin}</div>
     `;
 
@@ -531,32 +507,23 @@ function goToConfirm() {
 }
 
 async function placeOrder() {
-    const lineTotal = cart.reduce((s, i) => s + Number(i.price) * Number(i.qty), 0);
     const orderData = {
         customer_name: checkoutState.name,
         phone: checkoutState.phone,
-        email: checkoutState.email || undefined,
         address: checkoutState.address,
         city: checkoutState.city,
         pincode: checkoutState.pincode,
         items: cart.map(i => ({
-            id: typeof i.id === 'number' && Number.isFinite(i.id) ? i.id : 0,
+            id: typeof i.id === 'number' ? i.id : 0,
             name: i.name,
-            price: Number(i.price),
-            qty: Math.max(1, Math.floor(Number(i.qty)) || 1),
+            price: i.price,
+            qty: i.qty,
             emoji: i.emoji || '🍫',
             category: i.category || 'general',
             customizations: i.customizations || null
         })),
-        total: Math.round(lineTotal * 100) / 100
+        total: cart.reduce((s, i) => s + i.price * i.qty, 0)
     };
-
-    const waSnapshot = cart.map(i => ({
-        name: i.name,
-        price: Number(i.price),
-        qty: Math.max(1, Math.floor(Number(i.qty)) || 1)
-    }));
-    const waTotal = orderData.total;
 
     try {
         const res = await fetch(`${API_BASE}/orders`, {
@@ -564,20 +531,10 @@ async function placeOrder() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         });
-
-        let data;
-        const ct = res.headers.get('content-type') || '';
-        if (ct.includes('application/json')) {
-            data = await res.json();
-        } else {
-            const text = await res.text();
-            showToast(text ? text.slice(0, 160) : `Order failed (${res.status})`);
-            return;
-        }
-
+        const data = await res.json();
         if (data.success) {
             const orderId = data.order_id;
-            sendWhatsAppFinal(orderId, waSnapshot, waTotal);
+            sendWhatsAppFinal(orderId);
 
             cart = [];
             saveCart();
@@ -585,22 +542,14 @@ async function placeOrder() {
             closeCheckout();
             showToast(`🎉 Order ${orderId} placed! <a href="track.html?id=${orderId}" class="toast-track-link">Track Order</a>`);
         } else {
-            const errText = (data && (data.message || data.error)) ? String(data.message || data.error) : '';
-            showToast(errText || `Could not save order (HTTP ${res.status}). Try again or check the server.`);
+            showToast('Failed to save order. Please try again.');
         }
     } catch (e) {
-        console.error(e);
         showToast('Error placing order. Please try again.');
     }
 }
 
 // --- WHATSAPP FINAL ---
-function sendWhatsAppFinal(orderId, itemsSnap, orderTotal) {
-    const lines = Array.isArray(itemsSnap) && itemsSnap.length ? itemsSnap : cart;
-    const total = typeof orderTotal === 'number' && Number.isFinite(orderTotal)
-        ? orderTotal
-        : lines.reduce((s, i) => s + Number(i.price) * Number(i.qty), 0);
-    const itemLines = lines.map(i => `• ${i.name} × ${i.qty} = ₹${(Number(i.price) * Number(i.qty)).toLocaleString('en-IN')}`).join('\n');
 function sendWhatsAppFinal(orderId) {
     const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
     const itemLines = cart.map(i => {
@@ -622,7 +571,7 @@ function sendWhatsAppFinal(orderId) {
         `📱 *Phone:* +91 ${checkoutState.phone}\n` +
         `📍 *Address:* ${checkoutState.address}, ${checkoutState.city} - ${checkoutState.pincode}\n\n` +
         `🛒 *Order Details:*\n${itemLines}\n\n` +
-        `💰 *Total Amount: ₹${total.toLocaleString('en-IN')}*\n\n` +
+        `💰 *Total Amount: ₹${total.toLocaleString()}*\n\n` +
         `_Your order has been recorded. Please share the payment receipt for confirmation!_ ✨`;
 
     const encodedMsg = encodeURIComponent(message);
@@ -669,8 +618,6 @@ function filterProducts(category, btn) {
                 <div class="product-category">${p.category}</div>
                 <div class="product-name">${p.name}</div>
                 <div class="product-price">₹${p.price}</div>
-                <button type="button" class="add-to-cart" data-product-id="${String(p.id)}">
-                    Add to Cart
                 <button class="add-to-cart">
                     Customize & Add
                 </button>
@@ -682,12 +629,6 @@ function filterProducts(category, btn) {
 // --- BIRTHDAY CAKE BUILDER ---
 let selectedFlavor = 'Red Velvet';
 let selectedWeight = '1.0';
-const BIRTHDAY_BASE_PRICES = {
-    '0.5': 450,
-    '1.0': 850,
-    '1.5': 1250,
-    '2.0': 1600
-};
 // bdayCakes object is now populated dynamically via loadProducts()
 
 function updateBirthdayCake(flavor) {
@@ -701,9 +642,6 @@ function updateBirthdayCake(flavor) {
 
     // Update image
     const cakeImg = document.getElementById('birthdayCakeImg');
-    if (cakeImg && bdayCakes[flavor]) {
-        cakeImg.src = bdayCakes[flavor].img;
-    }
 
     if (cakeImg) {
         cakeImg.src = bdayCakes[flavor].img;
@@ -711,10 +649,10 @@ function updateBirthdayCake(flavor) {
 
     // Update active flavor button
     document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.classList.remove('active');
+
         if (btn.textContent.trim() === flavor) {
             btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
         }
     });
 
@@ -740,7 +678,15 @@ function setCakeWeight(weight) {
 }
 
 function calculateBdayPrice() {
-    const finalPrice = BIRTHDAY_BASE_PRICES[selectedWeight];
+
+    const basePrices = {
+        "0.5": 450,
+        "1.0": 850,
+        "1.5": 1250,
+        "2.0": 1600
+    };
+
+    const finalPrice = basePrices[selectedWeight];
 
     const priceEl = document.getElementById('cakePrice');
 
@@ -751,12 +697,18 @@ function calculateBdayPrice() {
 }
 
 function getBirthdayFavouriteItem() {
+    const basePrices = {
+        "0.5": 450,
+        "1.0": 850,
+        "1.5": 1250,
+        "2.0": 1600
+    };
     const cake = bdayCakes[selectedFlavor] || {};
 
     return {
         id: `bday-${selectedFlavor}-${selectedWeight}`,
         name: `${selectedFlavor} Cake (${selectedWeight}kg)`,
-        price: BIRTHDAY_BASE_PRICES[selectedWeight],
+        price: basePrices[selectedWeight],
         img: cake.img || document.getElementById('birthdayCakeImg')?.src || '',
         emoji: cake.emoji || '',
         category: 'cakes'
@@ -783,8 +735,14 @@ function toggleBirthdayFavourite() {
 
 function addBirthdayToCart() {
     if (!bdayCakes[selectedFlavor]) return; // Wait until loaded
-    const finalPrice = BIRTHDAY_BASE_PRICES[selectedWeight];
-    const msgInput = document.getElementById('cakeMessage');
+const basePrices = {
+    "0.5": 450,
+    "1.0": 850,
+    "1.5": 1250,
+    "2.0": 1600
+};
+
+const finalPrice = basePrices[selectedWeight];    const msgInput = document.getElementById('cakeMessage');
     const message = msgInput ? msgInput.value.trim() : '';
 
     const item = {
@@ -793,12 +751,13 @@ function addBirthdayToCart() {
         price: Math.round(finalPrice),
         img: bdayCakes[selectedFlavor].img,
         emoji: bdayCakes[selectedFlavor].emoji,
-        category: 'cakes',
-        message,
+        category: "cakes",
+        message: message,
         qty: 1
     };
     addToCart(item);
     if (msgInput) msgInput.value = '';
+    openCart();
 }
 
 function renderFavouritesPage() {
@@ -877,23 +836,6 @@ document.addEventListener('DOMContentLoaded', () => {
     applyTheme(localStorage.getItem('bb_theme') || 'light');
 
     updateCartUI();
-    if (document.getElementById('productsGrid')) {
-        filterProducts('all');
-    }
-    if (document.getElementById('cakePrice')) {
-        calculateBdayPrice();
-    }
-    const productsGrid = document.getElementById('productsGrid');
-    if (productsGrid) {
-        productsGrid.addEventListener('click', (e) => {
-            const btn = e.target.closest('.add-to-cart');
-            if (!btn || !productsGrid.contains(btn)) return;
-            const rawId = btn.getAttribute('data-product-id');
-            if (rawId == null || rawId === '') return;
-            const product = products.find((pr) => String(pr.id) === String(rawId));
-            if (product) addToCart({ ...product });
-        });
-    }
     loadProducts(); // Load and then automatically re-render main grid/birthday block
     updateFavouriteButtons('bakeries', BROWNIE_BLISS_BAKERY.id);
     updateFavouritesCount();
@@ -913,15 +855,27 @@ document.addEventListener('DOMContentLoaded', () => {
 async function trackOrder(id) {
     const orderIdInput = document.getElementById('orderIdInput');
     const trackError = document.getElementById('trackError');
+    const result = document.getElementById('result');
+
     if (!orderIdInput) return;
 
-    if (trackError) trackError.style.display = 'none';
+    // Reset previous state
+    if (trackError) {
+        trackError.classList.remove('show');
+        trackError.textContent = '';
+    }
+
+    if (result) {
+        result.style.display = 'none';
+    }
 
     const orderId = id || orderIdInput.value.trim();
+
+    // Empty input validation
     if (!orderId) {
         if (trackError) {
             trackError.textContent = 'Please enter an Order ID';
-            trackError.style.display = 'block';
+            trackError.classList.add('show');
         }
         return;
     }
@@ -929,21 +883,32 @@ async function trackOrder(id) {
     try {
         const res = await fetch(`${API_BASE}/orders/${orderId}`);
         const data = await res.json();
+
+        // Successful order fetch
         if (data.success || data.order) {
             renderOrderDetails(data.order || data);
-        } else {
-            if (trackError) {
-                trackError.textContent = data.error || 'Order not found';
-                trackError.style.display = 'block';
+
+            if (result) {
+                result.style.display = 'block';
             }
-            document.getElementById('result').style.display = 'none';
         }
+        // Invalid order
+        else {
+            if (trackError) {
+                trackError.textContent =
+                    data.error || 'Order not found';
+                trackError.classList.add('show');
+            }
+        }
+
     } catch (e) {
+        console.error(e);
+
         if (trackError) {
-            trackError.textContent = 'Error fetching order. Make sure the server is running!';
-            trackError.style.display = 'block';
+            trackError.textContent =
+                'Error fetching order. Make sure server is running!';
+            trackError.classList.add('show');
         }
-        document.getElementById('result').style.display = 'none';
     }
 }
 
