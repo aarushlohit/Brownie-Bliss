@@ -540,10 +540,13 @@ nav a:hover {
   border-color: var(--color-primary);
 }
 
-.products-grid {
+.products-grid,
+.all-products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
+  justify-content: center;
+  gap: 28px;
+  width: 100%;
 }
 
 /* Responsive adjustments */
@@ -3151,10 +3154,13 @@ nav a:hover {
   border-color: var(--brown-dark);
 }
 
-.products-grid {
+.products-grid,
+.all-products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
+  justify-content: center;
+  gap: 28px;
+  width: 100%;
 }
 
 .product-card {
@@ -5513,11 +5519,6 @@ nav a:hover {
   border-color: var(--brown-dark);
 }
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-}
 
 .product-card {
   background: var(--white);
