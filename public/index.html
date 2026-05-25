@@ -1402,478 +1402,90 @@
                   </div>
                 </div>
 
-                <!-- BUTTON -->
-                <button type="submit" class="lux-btn complaint-btn">
-                  <i class="bi bi-exclamation-circle-fill"></i>
-                  Submit Complaint
-                </button>
-              </form>
-            </div>
-          </div>
+      </div>
+    </div>
+  </section>
+
+
+<section class="bb-reviews">
+  <p class="eyebrow">Loved by our customers</p>
+  <h2>Sweet Words from <em>Happy Customers</em></h2>
+
+  <div class="reviews-grid">
+
+    <div class="review-card featured">
+      <span class="featured-badge">Top review</span>
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">The brownies were unbelievably rich and fresh. You can genuinely feel the homemade touch in every bite. This isn't just food — it's comfort wrapped in chocolate.</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">KS</div>
+        <div>
+          <p class="reviewer-name">Keerthana S.</p>
+          <p class="reviewer-location">Krishnagiri</p>
         </div>
       </div>
-
-      <!-- TOAST -->
-      <div id="toastContainer"></div>
-
-      <!-- =========================
-   STYLES
-  ========================== -->
-      <style>
-        .lux-card {
-          background: rgba(255, 255, 255, 0.95);
-          border-radius: 30px;
-          padding: 45px;
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.6);
-          box-shadow:
-            0 15px 40px rgba(0, 0, 0, 0.06),
-            0 2px 10px rgba(0, 0, 0, 0.04);
-          position: relative;
-          transition: 0.4s ease;
-        }
-
-        .lux-card:hover {
-          transform: translateY(-6px);
-          box-shadow:
-            0 20px 50px rgba(0, 0, 0, 0.1),
-            0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .icon-box {
-          width: 70px;
-          height: 70px;
-          border-radius: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 25px;
-          font-size: 28px;
-        }
-
-        .review-icon {
-          background: rgba(212, 175, 55, 0.15);
-          color: var(--gold);
-        }
-
-        .complaint-icon {
-          background: rgba(72, 46, 35, 0.1);
-          color: var(--brown-dark);
-        }
-
-        .form-heading {
-          font-family: "Playfair Display", serif;
-          font-size: 36px;
-          color: var(--brown-dark);
-          margin-bottom: 10px;
-          font-weight: 700;
-        }
-
-        .form-subtext {
-          color: var(--text-mid);
-          margin-bottom: 35px;
-          line-height: 1.8;
-          font-size: 15px;
-        }
-
-        .lux-label {
-          display: block;
-          margin-bottom: 12px;
-          color: var(--gold);
-          font-size: 12px;
-          text-transform: uppercase;
-          font-weight: 700;
-          letter-spacing: 1.5px;
-        }
-
-        .lux-input {
-          border-radius: 16px;
-          border: 1px solid #e8dfd2;
-          padding: 16px 18px;
-          font-size: 15px;
-          background: #fff;
-          color: var(--brown-dark);
-          transition: all 0.3s ease;
-          box-shadow: none !important;
-        }
-
-        .lux-input::placeholder {
-          color: #aa9e93;
-        }
-
-        .lux-input:focus {
-          border-color: var(--gold);
-          box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.12) !important;
-          transform: translateY(-1px);
-        }
-
-        textarea.lux-input {
-          resize: none;
-        }
-
-        .lux-btn {
-          width: 100%;
-          border: none;
-          border-radius: 16px;
-          padding: 17px;
-          font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          transition: all 0.3s ease;
-          color: white;
-          font-size: 14px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          margin-top: 10px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .review-btn {
-          background: linear-gradient(135deg, #d4af37, #f0cc62);
-        }
-
-        .complaint-btn {
-          background: linear-gradient(135deg, #3d2a20, #5c4033);
-        }
-
-        .lux-btn:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .lux-btn:focus {
-          outline: 4px solid rgba(212, 175, 55, 0.18);
-        }
-
-        /* STARS */
-        .star-btn {
-          width: 50px;
-          height: 50px;
-          border-radius: 14px;
-          border: none;
-          background: #f8f4ec;
-          color: #d2c7bb;
-          font-size: 24px;
-          transition: all 0.25s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .star-btn:hover,
-        .star-btn.active {
-          background: rgba(212, 175, 55, 0.15);
-          color: var(--gold);
-          transform: scale(1.08);
-        }
-
-        .star-btn:focus {
-          outline: 3px solid rgba(212, 175, 55, 0.2);
-        }
-
-        .error-text {
-          color: #dc3545;
-          margin-top: 8px;
-          font-size: 14px;
-        }
-
-        /* TOASTS */
-        #toastContainer {
-          position: fixed;
-          top: 30px;
-          right: 30px;
-          z-index: 9999;
-        }
-
-        .toast-box {
-          min-width: 320px;
-          padding: 18px 22px;
-          border-radius: 16px;
-          margin-bottom: 15px;
-          color: white;
-          font-weight: 600;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-          animation: slideToast 0.4s ease;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-
-        .toast-success {
-          background: linear-gradient(135deg, #198754, #28a745);
-        }
-
-        .toast-error {
-          background: linear-gradient(135deg, #dc3545, #ff5f6d);
-        }
-
-        @keyframes slideToast {
-          from {
-            opacity: 0;
-            transform: translateX(100%);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        /* MOBILE */
-        @media (max-width: 991px) {
-          .lux-card {
-            padding: 35px;
-          }
-
-          .form-heading {
-            font-size: 30px;
-          }
-        }
-
-        @media (max-width: 576px) {
-          #feedback {
-            padding: 90px 15px !important;
-          }
-
-          .lux-card {
-            padding: 28px;
-            border-radius: 24px;
-          }
-
-          .form-heading {
-            font-size: 26px;
-          }
-
-          .star-btn {
-            width: 45px;
-            height: 45px;
-          }
-        }
-      </style>
-
-      <!-- =========================
-   SCRIPT
-  ========================== -->
-      <script>
-        // STAR RATING
-        const stars = document.querySelectorAll(".star-btn");
-        const ratingValue = document.getElementById("ratingValue");
-        const ratingError = document.getElementById("ratingError");
-
-        let currentRating = 0;
-
-        stars.forEach((star, index) => {
-          star.addEventListener("click", () => {
-            currentRating = index + 1;
-
-            ratingValue.value = currentRating;
-
-            updateStars(currentRating);
-
-            ratingError.innerHTML = "";
-          });
-
-          // Keyboard accessibility
-          star.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-
-              star.click();
-            }
-          });
-        });
-
-        function updateStars(value) {
-          stars.forEach((star, i) => {
-            if (i < value) {
-              star.classList.add("active");
-            } else {
-              star.classList.remove("active");
-            }
-          });
-        }
-
-        // TOAST
-        function showToast(message, type) {
-          const toast = document.createElement("div");
-
-          toast.className = `toast-box toast-${type}`;
-
-          toast.innerHTML = message;
-
-          document.getElementById("toastContainer").appendChild(toast);
-
-          setTimeout(() => {
-            toast.remove();
-          }, 3500);
-        }
-
-        // REVIEW FORM
-        const reviewForm = document.getElementById("reviewForm");
-
-        reviewForm.addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          let valid = true;
-
-          if (!reviewForm.checkValidity()) {
-            valid = false;
-          }
-
-          if (!ratingValue.value) {
-            ratingError.innerHTML = "Please select a rating.";
-
-            valid = false;
-          }
-
-          reviewForm.classList.add("was-validated");
-
-          if (valid) {
-            showToast(
-              '<i class="bi bi-check-circle-fill"></i> Review submitted successfully!',
-              "success",
-            );
-
-            reviewForm.reset();
-
-            currentRating = 0;
-
-            updateStars(0);
-
-            reviewForm.classList.remove("was-validated");
-          } else {
-            showToast(
-              '<i class="bi bi-exclamation-circle-fill"></i> Please complete all required fields.',
-              "error",
-            );
-          }
-        });
-
-        // COMPLAINT FORM
-        const complaintForm = document.getElementById("complaintForm");
-
-        complaintForm.addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          if (!complaintForm.checkValidity()) {
-            complaintForm.classList.add("was-validated");
-
-            showToast(
-              '<i class="bi bi-exclamation-circle-fill"></i> Please fill all required complaint fields.',
-              "error",
-            );
-
-            return;
-          }
-
-          showToast(
-            '<i class="bi bi-check-circle-fill"></i> Complaint submitted successfully!',
-            "success",
-          );
-
-          complaintForm.reset();
-
-          complaintForm.classList.remove("was-validated");
-        });
-      </script>
-    </section>
-    <section class="bb-reviews">
-      <p class="eyebrow">Loved by our customers</p>
-      <h2>Sweet Words from <em>Happy Customers</em></h2>
-
-      <div class="reviews-grid">
-        <div class="review-card featured">
-          <span class="featured-badge">Top review</span>
-          <span class="quote-mark">"</span>
-          <div class="stars">★★★★★</div>
-          <p class="review-text">
-            The brownies were unbelievably rich and fresh. You can genuinely
-            feel the homemade touch in every bite. This isn't just food — it's
-            comfort wrapped in chocolate.
-          </p>
-          <div class="reviewer">
-            <div class="reviewer-avatar">KS</div>
-            <div>
-              <p class="reviewer-name">Keerthana S.</p>
-              <p class="reviewer-location">Krishnagiri</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="review-card">
-          <span class="quote-mark">"</span>
-          <div class="stars">★★★★★</div>
-          <p class="review-text">
-            Ordered a birthday cake and everyone loved it. Beautiful
-            presentation and amazing taste!
-          </p>
-          <div class="reviewer">
-            <div class="reviewer-avatar">RM</div>
-            <div>
-              <p class="reviewer-name">Rahul M.</p>
-              <p class="reviewer-location">Krishnagiri</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="review-card">
-          <span class="quote-mark">"</span>
-          <div class="stars">★★★★★</div>
-          <p class="review-text">
-            One of the best homemade dessert brands here. Fresh, soft, and
-            perfectly balanced sweetness.
-          </p>
-          <div class="reviewer">
-            <div class="reviewer-avatar">DR</div>
-            <div>
-              <p class="reviewer-name">Divya R.</p>
-              <p class="reviewer-location">Krishnagiri</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="review-card">
-          <span class="quote-mark">"</span>
-          <div class="stars">★★★★★</div>
-          <p class="review-text">
-            The cookies tasted just like homemade treats from childhood. Soft,
-            fresh and absolutely comforting.
-          </p>
-          <div class="reviewer">
-            <div class="reviewer-avatar">AK</div>
-            <div>
-              <p class="reviewer-name">Ananya K.</p>
-              <p class="reviewer-location">Krishnagiri</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="review-card">
-          <span class="quote-mark">"</span>
-          <div class="stars">★★★★★</div>
-          <p class="review-text">
-            Brownie Bliss never disappoints. Every dessert feels thoughtfully
-            crafted and beautifully packed.
-          </p>
-          <div class="reviewer">
-            <div class="reviewer-avatar">SP</div>
-            <div>
-              <p class="reviewer-name">Sriram P.</p>
-              <p class="reviewer-location">Krishnagiri</p>
-            </div>
-          </div>
+    </div>
+
+    <div class="review-card">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">Ordered a birthday cake and everyone loved it. Beautiful presentation and amazing taste!</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">RM</div>
+        <div>
+          <p class="reviewer-name">Rahul M.</p>
+          <p class="reviewer-location">Krishnagiri</p>
         </div>
       </div>
+    </div>
 
-      <div class="bb-overall">
-        <span class="stars-big">★★★★★</span>
-        <p class="rating-text">
-          <strong>5.0</strong> · 5 reviews · All homemade, all heart
-        </p>
+    <div class="review-card">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">One of the best homemade dessert brands here. Fresh, soft, and perfectly balanced sweetness.</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">DR</div>
+        <div>
+          <p class="reviewer-name">Divya R.</p>
+          <p class="reviewer-location">Krishnagiri</p>
+        </div>
       </div>
-    </section>
+    </div>
+
+    <div class="review-card">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">The cookies tasted just like homemade treats from childhood. Soft, fresh and absolutely comforting.</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">AK</div>
+        <div>
+          <p class="reviewer-name">Ananya K.</p>
+          <p class="reviewer-location">Krishnagiri</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <span class="quote-mark">"</span>
+      <div class="stars">★★★★★</div>
+      <p class="review-text">Brownie Bliss never disappoints. Every dessert feels thoughtfully crafted and beautifully packed.</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">SP</div>
+        <div>
+          <p class="reviewer-name">Sriram P.</p>
+          <p class="reviewer-location">Krishnagiri</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bb-overall">
+    <span class="stars-big">★★★★★</span>
+    <p class="rating-text"><strong>5.0</strong> · 5 reviews · All homemade, all heart</p>
+  </div>
+</section>
 
     <!-- FOOTER -->
     <footer id="contact">
